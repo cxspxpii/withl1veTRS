@@ -3,173 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>With Live - TREASURE 抽選</title>
+    <title>With Live - TREASURE</title>
     <style>
         :root {
-            --primary-text: #333;
-            --secondary-text: #666;
-            --line-green: #2ecc71;
-            --btn-pink: #e05697;
-            --btn-green: #52e396;
-            --win-red: #d63031;
-            --lose-blue: #0984e3;
-            --bg-white: #ffffff;
+            --p-text: #333;
+            --line-g: #2ecc71;
+            --btn-p: #e05697;
+            --btn-g: #52e396;
+            --win: #d63031;
+            --lose: #0984e3;
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0; padding: 0; background-color: var(--bg-white);
-            display: flex; justify-content: center; min-height: 100vh;
-        }
-
-        .phone-container { width: 100%; max-width: 414px; display: flex; flex-direction: column; position: relative; }
-
-        .header { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center; }
-        .menu-icon { font-size: 24px; color: #555; }
-
-        .page-content { flex: 1; padding: 20px; display: flex; flex-direction: column; }
-
-        /* 第一頁 */
-        .main-title { font-size: 1.2rem; font-weight: bold; margin: 10px 0 25px 0; }
-        .section-label { font-size: 0.9rem; font-weight: bold; margin-bottom: 8px; }
-        select { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; }
-        input[type="text"] { width: 100%; padding: 12px 0; border: none; font-size: 1.2rem; font-weight: bold; outline: none; }
-        .input-underline { height: 2px; background-color: var(--line-green); width: 100%; margin-bottom: 25px; }
-
-        /* 按鈕樣式 */
-        .btn { width: 100%; padding: 12px; border-radius: 5px; font-size: 0.95rem; font-weight: bold; cursor: pointer; margin-bottom: 10px; border: 1px solid transparent; transition: 0.2s; }
-        .btn-obtain { background-color: #f8f9fa; border: 1px solid #ddd; color: #333; }
-        .btn-submit { background-color: var(--btn-pink); color: white; margin-top: 10px; }
+        body { font-family: sans-serif; margin: 0; background: #fff; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 414px; min-height: 100vh; position: relative; display: flex; flex-direction: column; }
+        .header { padding: 15px 20px; border-bottom: 1px solid #eee; font-size: 24px; color: #555; }
+        .content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .title { font-size: 1.15rem; font-weight: bold; margin: 10px 0 25px 0; }
+        .label { font-size: 0.9rem; font-weight: bold; margin-bottom: 8px; }
+        select { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; -webkit-appearance: none; background: #fff; }
+        input { width: 100%; padding: 12px 0; border: none; font-size: 1.2rem; font-weight: bold; outline: none; }
+        .line { height: 2px; background: var(--line-g); width: 100%; margin-bottom: 25px; }
+        .btn { width: 100%; padding: 14px; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; border: none; margin-bottom: 12px; text-align: center; }
+        .btn-gray { background: #f8f9fa; border: 1px solid #ddd; color: #333; }
+        .btn-pink { background: var(--btn-p); color: #fff; margin-top: 10px; }
+        .btn-green { background: var(--btn-g); color: #fff; }
+        .btn-out { background: #fff; color: var(--btn-g); border: 1px solid var(--btn-g); }
+        .res-status { font-size: 2.2rem; font-weight: bold; margin: 20px 0; }
+        .win-t { color: var(--win); }
+        .lose-t { color: var(--lose); }
+        .res-desc { font-size: 1rem; line-height: 1.6; margin-bottom: 40px; font-weight: bold; }
         
-        /* 結果頁按鈕群 */
-        .btn-result-main { background-color: var(--btn-green); color: white; border: none; }
-        .btn-result-outline { background-color: white; color: var(--btn-green); border: 1px solid var(--btn-green); }
-
-        /* 結果文字 */
-        .result-status { font-size: 2.2rem; font-weight: bold; margin: 20px 0; }
-        .status-win { color: var(--win-red); }
-        .status-lose { color: var(--lose-blue); }
-        .result-desc { font-size: 1rem; line-height: 1.6; margin-bottom: 30px; font-weight: bold; }
-
-        /* 累計結果彈窗 */
-        #stats-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center;
-        }
-        .modal-content { background: white; padding: 30px; border-radius: 15px; width: 80%; max-width: 300px; text-align: center; }
+        #loading { position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.9); display:none; justify-content:center; align-items:center; z-index:99; font-weight:bold; }
         
-        #loading { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; display: none; justify-content: center; align-items: center; z-index: 50; font-weight: bold; }
+        /* 彈窗優化 */
+        #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:100; justify-content:center; align-items:center; }
+        .modal-box { background:#fff; padding:20px; border-radius:15px; width:85%; max-height: 80vh; display:flex; flex-direction:column; }
+        .modal-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; text-align: center; }
+        .history-list { flex: 1; overflow-y: auto; text-align: left; border-top: 1px solid #eee; padding-top: 10px; }
+        .history-item { margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed #eee; font-size: 0.9rem; }
+        .item-event { font-weight: bold; color: #555; display: block; margin-bottom: 3px; }
+        .item-res-win { color: var(--win); font-weight: bold; }
+        .item-res-lose { color: var(--lose); font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="phone-container">
-    <div class="header"><div class="menu-icon">☰</div></div>
+<div class="container">
+    <div class="header">☰</div>
     <div id="loading">抽選中...</div>
 
-    <div id="page-input" class="page-content">
-        <div class="main-title">選択中：TREASURE</div>
-        <div class="section-label">公演を選択してください</div>
-        <select id="eventSelect">
-            <option value="2025.10.25[Sat] 京王アリーナTOKYO">2025.10.25[Sat] 京王アリーナTOKYO</option>
-            <option value="2025.10.26[Sun] 京王アリーナTOKYO">2025.10.26[Sun] 京王アリーナTOKYO</option>
-            <option value="2025.11.07[Fri] IGアリーナ">2025.11.07[Fri] IGアリーナ</option>
-            <option value="2025.11.08[Sat] IGアリーナ">2025.11.08[Sat] IGアリーナ</option>
-            <option value="2025.11.09[Sun] IGアリーナ">2025.11.09[Sun] IGアリーナ</option>
-            <option value="2025.11.14[Fri] マリンメッセ福岡">2025.11.14[Fri] マリンメッセ福岡</option>
-            <option value="2025.11.15[Sat] マリンメッセ福岡" selected>2025.11.15[Sat] マリンメッセ福岡</option>
-            <option value="2025.11.16[Sun] マリンメッセ福岡">2025.11.16[Sun] マリンメッセ福岡</option>
-            <option value="2025.11.22[Sat] Kアリーナ横浜">2025.11.22[Sat] Kアリーナ横浜</option>
-            <option value="2025.11.23[Sun] Kアリーナ横浜">2025.11.23[Sun] Kアリーナ横浜</option>
-            <option value="2025.11.24[Mon] Kアリーナ横浜">2025.11.24[Mon] Kアリーナ横浜</option>
-            <option value="2026.01.10[Sat] Kアリーナ横浜">2026.01.10[Sat] Kアリーナ横浜</option>
-            <option value="2026.01.11[Sun] Kアリーナ横浜">2026.01.11[Sun] Kアリーナ横浜</option>
-            <option value="2026.02.10[Sat] 京セラドーム大阪">2026.02.10[Sat] 京セラドーム大阪</option>
-            <option value="2026.02.11[Sun] 京セラドーム大阪">2026.02.11[Sun] 京セラドーム大阪</option>
+    <div id="p1" class="content">
+        <div class="title">選択中：TREASURE</div>
+        <div class="label">公演を選択してください</div>
+        <select id="sel">
+            <option selected>2025.10.25[Sat] 京王アリーナTOKYO</option>
+            <option>2025.10.26[Sun] 京王アリーナTOKYO</option>
+            <option>2025.11.07[Fri] IGアリーナ</option>
+            <option>2025.11.08[Sat] IGアリーナ</option>
+            <option>2025.11.09[Sun] IGアリーナ</option>
+            <option>2025.11.14[Fri] マリンメッセ福岡</option>
+            <option>2025.11.15[Sat] マリンメッセ福岡</option>
+            <option>2025.11.16[Sun] マリンメッセ福岡</option>
+            <option>2025.11.22[Sat] Kアリーナ横浜</option>
+            <option>2025.11.23[Sun] Kアリーナ横浜</option>
+            <option>2025.11.24[Mon] Kアリーナ横浜</option>
+            <option>2026.01.10[Sat] Kアリーナ横浜</option>
+            <option>2026.01.11[Sun] Kアリーナ横浜</option>
+            <option>2026.02.10[Sat] 京セラドーム大阪</option>
+            <option>2026.02.11[Sun] 京セラドーム大阪</option>
         </select>
-        <div class="section-label">シリアルコードを入カ</div>
-        <input type="text" id="serialNumber" placeholder="WL-XXXXXX" readonly>
-        <div class="input-underline"></div>
-        <button class="btn btn-obtain" onclick="generateID()">シリアルコードを取得する</button>
-        <button class="btn btn-submit" onclick="startDraw()">送信する</button>
+        <div class="label">シリアルコードを入カ</div>
+        <input type="text" id="sn" placeholder="WL-XXXXXX" readonly>
+        <div class="line"></div>
+        <button class="btn btn-gray" onclick="doGetID()">シリアルコードを取得する</button>
+        <button class="btn btn-pink" onclick="doDraw()">送信する</button>
     </div>
 
-    <div id="page-result" class="page-content" style="display:none;">
-        <div class="main-title">選択中：TREASURE</div>
-        <div id="resStatus" class="result-status"></div>
-        <div id="resDesc" class="result-desc"></div>
-        
-        <button class="btn btn-result-main" onclick="showStats()">エントリー状況を確認</button>
-        <button class="btn btn-result-outline" onclick="goHome()">この賞のトップに戻る</button>
-        <button class="btn btn-result-outline" onclick="goHome()">応募ページトップに戻る</button>
+    <div id="p2" class="content" style="display:none;">
+        <div id="dispEv" style="font-weight:bold; margin-bottom:5px;"></div>
+        <div style="font-size:0.9rem; margin-bottom:20px;">選択中：TREASURE</div>
+        <div id="st" class="res-status"></div>
+        <div id="ds" class="res-desc"></div>
+        <button class="btn btn-green" onclick="doShowStat()">エントリー状況を確認</button>
+        <button class="btn btn-out" onclick="doHome()">この賞のトップに戻る</button>
     </div>
 </div>
 
-<div id="stats-modal" onclick="this.style.display='none'">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <h3>累計抽選結果</h3>
-        <hr>
-        <p>總次數：<span id="totalCount">0</span></p>
-        <p style="color:red">當選：<span id="winCount">0</span></p>
-        <p style="color:blue">落選：<span id="loseCount">0</span></p>
-        <button class="btn btn-result-main" onclick="document.getElementById('stats-modal').style.display='none'">閉じる</button>
+<div id="modal" onclick="this.style.display='none'">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <div class="modal-title">エントリー状況</div>
+        <div id="historyContainer" class="history-list">
+            </div>
+        <button class="btn btn-green" style="margin-top:15px; margin-bottom:0;" onclick="document.getElementById('modal').style.display='none'">閉じる</button>
     </div>
 </div>
 
 <script>
-    // 儲存累計數據
-    let stats = { total: 0, win: 0, lose: 0 };
+    // 使用 window 屬性來儲存歷史紀錄列表
+    window.lotteryHistory = window.lotteryHistory || [];
 
-    function generateID() {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let res = 'WL-';
-        for(let i=0; i<6; i++) res += chars[Math.floor(Math.random()*chars.length)];
-        document.getElementById('serialNumber').value = res;
+    function doGetID() {
+        const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let r = 'WL-';
+        for(let i=0; i<6; i++) r += c.charAt(Math.floor(Math.random()*c.length));
+        document.getElementById('sn').value = r;
     }
 
-    function startDraw() {
-        const sn = document.getElementById('serialNumber').value;
-        if(!sn) return alert("序號未取得");
-
+    function doDraw() {
+        const val = document.getElementById('sn').value;
+        const eventName = document.getElementById('sel').value;
+        if(!val) return alert("シリアルコードを取得してください");
+        
         document.getElementById('loading').style.display = 'flex';
-
+        
         setTimeout(() => {
-            const isWin = Math.random() < 0.2; // 20% 機率
-            stats.total++;
-            if(isWin) stats.win++; else stats.lose++;
-
-            const status = document.getElementById('resStatus');
-            const desc = document.getElementById('resDesc');
-
-            if(isWin) {
-                status.innerText = "当選";
-                status.className = "result-status status-win";
-                desc.innerText = "ご当選についての案内をご登録メールアドレスに送信しましたので必ずご確認いただきますようお願いいたします。";
+            const win = Math.random() < 0.5; // 50% 機率
+            
+            // 存入歷史紀錄
+            window.lotteryHistory.unshift({
+                event: eventName,
+                result: win ? "当選" : "落選"
+            });
+            
+            document.getElementById('dispEv').innerText = eventName;
+            const st = document.getElementById('st');
+            const ds = document.getElementById('ds');
+            
+            if(win) {
+                st.innerText = "当選";
+                st.className = "res-status win-t";
+                ds.innerText = "ご当選についての案内をご登録メールアドレスに送信しましたので必ずご確認いただきますようお願いいたします。";
             } else {
-                status.innerText = "落選";
-                status.className = "result-status status-lose";
-                desc.innerText = "誠に残念ながら、今回はご希望に添いかねる結果となりました。";
+                st.innerText = "落選";
+                st.className = "res-status lose-t";
+                ds.innerText = "誠に残念ながら、今回はご希望に添いかねる結果となりました。";
             }
-
+            
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('page-input').style.display = 'none';
-            document.getElementById('page-result').style.display = 'flex';
-        }, 1000);
+            document.getElementById('p1').style.display = 'none';
+            document.getElementById('p2').style.display = 'flex';
+        }, 800);
     }
 
-    function showStats() {
-        document.getElementById('totalCount').innerText = stats.total;
-        document.getElementById('winCount').innerText = stats.win;
-        document.getElementById('loseCount').innerText = stats.lose;
-        document.getElementById('stats-modal').style.display = 'flex';
+    function doShowStat() {
+        const container = document.getElementById('historyContainer');
+        container.innerHTML = ""; // 先清空
+
+        if (window.lotteryHistory.length === 0) {
+            container.innerHTML = "<div style='text-align:center; color:#999; padding:20px;'>履歴がありません</div>";
+        } else {
+            window.lotteryHistory.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                const resClass = item.result === "当選" ? "item-res-win" : "item-res-lose";
+                div.innerHTML = `
+                    <span class="item-event">${item.event}</span>
+                    結果：<span class="${resClass}">${item.result}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        document.getElementById('modal').style.display = 'flex';
     }
 
-    function goHome() {
-        document.getElementById('serialNumber').value = "";
-        document.getElementById('page-result').style.display = 'none';
-        document.getElementById('page-input').style.display = 'flex';
+    function doHome() {
+        document.getElementById('sn').value = "";
+        document.getElementById('p2').style.display = 'none';
+        document.getElementById('p1').style.display = 'flex';
     }
 </script>
 
 </body>
-</html>
+</ht
